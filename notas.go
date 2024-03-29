@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type Nota struct {
@@ -63,7 +65,7 @@ func (app *NotasApp) Bienvenida() {
 
 func (app *NotasApp) NuevaNota() {
 	titulo := leerEntrada("Ingrese el título de la nota: ")
-	contenido := leerEntrada("Ingrese el contenido de la nota: ")
+	contenido := leerEntradaMultilinea("Ingrese el contenido de la nota (presione Enter para terminar):\n")
 	categoria := leerEntrada("En qué categoría desea guardar la nota? ")
 
 	if _, existe := app.Categorias[categoria]; !existe {
@@ -138,6 +140,23 @@ func leerEntrada(mensaje string) string {
 	fmt.Print(mensaje)
 	fmt.Scanln(&entrada)
 	return entrada
+}
+
+func leerEntradaMultilinea(mensaje string) string {
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Print(mensaje)
+	var lineas []string
+	for scanner.Scan() {
+		linea := scanner.Text()
+		if linea == "" {
+			break
+		}
+		lineas = append(lineas, linea)
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Println("Error al leer la entrada:", err)
+	}
+	return strings.Join(lineas, "\n")
 }
 
 func main() {
