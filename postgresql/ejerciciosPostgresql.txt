@@ -1,0 +1,315 @@
+jameto@jameto:~$ psql -h 45.79.210.141 -U postgres -d zulu      
+Contraseña para usuario postgres: 
+psql (16.3 (Debian 16.3-1.pgdg120+1))
+Digite «help» para obtener ayuda.
+
+zulu=# INSERT INTO alumnos (nombre, calificacion, no_reportes) VALUES ('Jameto', 7, 0);
+INSERT 0 1
+zulu=# UPDATE alumnos SET cumple = 1995-20-10 WHERE id = 5; 
+ERROR:  column "cumple" is of type date but expression is of type integer
+LÍNEA 1: UPDATE alumnos SET cumple = 1995-20-10 WHERE id = 5;
+                                     ^
+SUGERENCIA:  You will need to rewrite or cast the expression.
+zulu=# UPDATE alumnos SET cumple =1995-20-10 WHERE id = 5; 
+ERROR:  column "cumple" is of type date but expression is of type integer
+LÍNEA 1: UPDATE alumnos SET cumple =1995-20-10 WHERE id = 5;
+                                    ^
+SUGERENCIA:  You will need to rewrite or cast the expression.
+zulu=# SELECT * FROM alumnos
+zulu-# :
+zulu-# ;
+ERROR:  syntax error at or near ":"
+LÍNEA 2: :
+         ^
+zulu=# SELECT * FROM alumnos;
+    nombre     | calificacion |   cumple   | no_reportes | id 
+---------------+--------------+------------+-------------+----
+ Benjamin      |            8 |            |           3 |  2
+ Ruben         |            7 |            |           0 |  3
+ Alejandro     |            9 |            |           1 |  4
+ Jameto        |            7 |            |           0 |  5
+ Diego Mendoza |            7 | 1999-01-08 |           1 |  1
+(5 filas)
+
+zulu=# UPDATE alumnos SET cumple =1995-20-10 WHERE id=5; 
+ERROR:  column "cumple" is of type date but expression is of type integer
+LÍNEA 1: UPDATE alumnos SET cumple =1995-20-10 WHERE id=5;
+                                    ^
+SUGERENCIA:  You will need to rewrite or cast the expression.
+zulu=# SELECT * FROM alumnos;
+    nombre     | calificacion |   cumple   | no_reportes | id 
+---------------+--------------+------------+-------------+----
+ Benjamin      |            8 |            |           3 |  2
+ Ruben         |            7 |            |           0 |  3
+ Alejandro     |            9 |            |           1 |  4
+ Jameto        |            7 |            |           0 |  5
+ Diego Mendoza |            7 | 1999-01-08 |           1 |  1
+(5 filas)
+
+zulu=# UPDATE alumnos
+SET cumple = '1995-10-20'
+WHERE id = 5;
+UPDATE 1
+zulu=# SELECT * FROM alumnos;
+    nombre     | calificacion |   cumple   | no_reportes | id 
+---------------+--------------+------------+-------------+----
+ Benjamin      |            8 |            |           3 |  2
+ Ruben         |            7 |            |           0 |  3
+ Alejandro     |            9 |            |           1 |  4
+ Diego Mendoza |            7 | 1999-01-08 |           1 |  1
+ Jameto        |            7 | 1995-10-20 |           0 |  5
+(5 filas)
+
+zulu=# \dt
+         Listado de relaciones
+ Esquema |  Nombre  | Tipo  |  Dueño   
+---------+----------+-------+----------
+ public  | alumnos  | tabla | postgres
+ public  | reportes | tabla | postgres
+(2 filas)
+
+zulu=# SELECT * FROM alumnos
+zulu-# ;
+    nombre     | calificacion |   cumple   | id 
+---------------+--------------+------------+----
+ Benjamin      |            8 |            |  2
+ Ruben         |            7 |            |  3
+ Alejandro     |            9 |            |  4
+ Diego Mendoza |            7 | 1999-01-08 |  1
+ Jameto        |            7 | 1995-10-20 |  5
+(5 filas)
+
+zulu=# UPDATE alumnos
+zulu-# SET cumple = '2000-03-15'
+zulu-# WHERE id =2;
+UPDATE 1
+zulu=# SELECT * FROM alumnos
+;
+    nombre     | calificacion |   cumple   | id 
+---------------+--------------+------------+----
+ Ruben         |            7 |            |  3
+ Alejandro     |            9 |            |  4
+ Diego Mendoza |            7 | 1999-01-08 |  1
+ Jameto        |            7 | 1995-10-20 |  5
+ Benjamin      |            8 | 2000-03-15 |  2
+(5 filas)
+
+zulu=# UPDATE alumnos
+zulu-# SET calificacion = +1
+zulu-# WHERE nombre = 'Ruben';
+UPDATE 1
+zulu=# SELECT * FROM alumnos
+;
+    nombre     | calificacion |   cumple   | id 
+---------------+--------------+------------+----
+ Alejandro     |            9 |            |  4
+ Diego Mendoza |            7 | 1999-01-08 |  1
+ Jameto        |            7 | 1995-10-20 |  5
+ Benjamin      |            8 | 2000-03-15 |  2
+ Ruben         |            1 |            |  3
+(5 filas)
+
+zulu=# UPDATE alumnos
+SET calificacion = calificacion + 8
+WHERE nombre = 'Ruben';
+UPDATE 1
+zulu=# SELECT * FROM alumnos
+;
+    nombre     | calificacion |   cumple   | id 
+---------------+--------------+------------+----
+ Alejandro     |            9 |            |  4
+ Diego Mendoza |            7 | 1999-01-08 |  1
+ Jameto        |            7 | 1995-10-20 |  5
+ Benjamin      |            8 | 2000-03-15 |  2
+ Ruben         |            9 |            |  3
+(5 filas)
+
+zulu=# UPDATE alumnos
+zulu-# SET cumple = '1998-05-25'
+zulu-# WHERE cumpe = NULL;
+ERROR:  column "cumpe" does not exist
+LÍNEA 3: WHERE cumpe = NULL;
+               ^
+SUGERENCIA:  Perhaps you meant to reference the column "alumnos.cumple".
+zulu=# UPDATE alumnos
+SET cumple = '1998-05-25'
+WHERE cumple = NULL;
+UPDATE 0
+zulu=# SELECT * FROM alumnos
+;
+    nombre     | calificacion |   cumple   | id 
+---------------+--------------+------------+----
+ Alejandro     |            9 |            |  4
+ Diego Mendoza |            7 | 1999-01-08 |  1
+ Jameto        |            7 | 1995-10-20 |  5
+ Benjamin      |            8 | 2000-03-15 |  2
+ Ruben         |            9 |            |  3
+(5 filas)
+
+zulu=# UPDATE alumnos
+SET cumple = '1998-05-25'
+WHERE cumple IS NULL;
+UPDATE 2
+zulu=# SELECT * FROM alumnos
+;
+    nombre     | calificacion |   cumple   | id 
+---------------+--------------+------------+----
+ Diego Mendoza |            7 | 1999-01-08 |  1
+ Jameto        |            7 | 1995-10-20 |  5
+ Benjamin      |            8 | 2000-03-15 |  2
+ Alejandro     |            9 | 1998-05-25 |  4
+ Ruben         |            9 | 1998-05-25 |  3
+(5 filas)
+
+zulu=# UPDATE alumnos
+zulu-# DROP nombre = 'Alejandro'
+zulu-# WHERE nombre = 'Alejandro';
+ERROR:  syntax error at or near "nombre"
+LÍNEA 2: DROP nombre = 'Alejandro'
+              ^
+zulu=# SELECT * FROM alumnos
+;
+    nombre     | calificacion |   cumple   | id 
+---------------+--------------+------------+----
+ Diego Mendoza |            7 | 1999-01-08 |  1
+ Jameto        |            7 | 1995-10-20 |  5
+ Benjamin      |            8 | 2000-03-15 |  2
+ Alejandro     |            9 | 1998-05-25 |  4
+ Ruben         |            9 | 1998-05-25 |  3
+(5 filas)
+
+zulu=# DELETE FROM alumnos
+zulu-# WHERE nombre = 'Alejandro'
+zulu-# SELECT * FROM alumnos
+;
+ERROR:  syntax error at or near "SELECT"
+LÍNEA 3: SELECT * FROM alumnos
+         ^
+zulu=# SELECT * FROM alumnos
+;
+    nombre     | calificacion |   cumple   | id 
+---------------+--------------+------------+----
+ Diego Mendoza |            7 | 1999-01-08 |  1
+ Jameto        |            7 | 1995-10-20 |  5
+ Benjamin      |            8 | 2000-03-15 |  2
+ Alejandro     |            9 | 1998-05-25 |  4
+ Ruben         |            9 | 1998-05-25 |  3
+(5 filas)
+
+zulu=# DELETE FROM alumnos
+zulu-# WHERE nombre = 'Jameto';
+ERROR:  update or delete on table "alumnos" violates foreign key constraint "reportes_id_alumno_fkey" on table "reportes"
+DETALLE:  Key (id)=(5) is still referenced from table "reportes".
+zulu=# DELETE FROM alumnos
+WHERE nombre = 'Ruben';
+ERROR:  update or delete on table "alumnos" violates foreign key constraint "reportes_id_alumno_fkey" on table "reportes"
+DETALLE:  Key (id)=(3) is still referenced from table "reportes".
+zulu=# DELETE FROM alumnos
+WHERE nombre = 'Alejandro';
+ERROR:  update or delete on table "alumnos" violates foreign key constraint "reportes_id_alumno_fkey" on table "reportes"
+DETALLE:  Key (id)=(4) is still referenced from table "reportes".
+zulu=# SELECT nombre, calificaion, cumple
+zulu-# FROM alumnos
+zulu-# ORDER BY calificacion DESC;
+ERROR:  column "calificaion" does not exist
+LÍNEA 1: SELECT nombre, calificaion, cumple
+                        ^
+SUGERENCIA:  Perhaps you meant to reference the column "alumnos.calificacion".
+zulu=# SELECT nombre, alumnos.calificaion, cumple
+FROM alumnos
+ORDER BY calificacion DESC;
+ERROR:  column alumnos.calificaion does not exist
+LÍNEA 1: SELECT nombre, alumnos.calificaion, cumple
+                        ^
+SUGERENCIA:  Perhaps you meant to reference the column "alumnos.calificacion".
+zulu=# SELECT nombre, calificacion, cumple
+FROM alumnos
+ORDER BY calificacion DESC;
+    nombre     | calificacion |   cumple   
+---------------+--------------+------------
+ Alejandro     |            9 | 1998-05-25
+ Ruben         |            9 | 1998-05-25
+ Benjamin      |            8 | 2000-03-15
+ Diego Mendoza |            7 | 1999-01-08
+ Jameto        |            7 | 1995-10-20
+(5 filas)
+
+zulu=# SELECT nombre, calificacion, cumple
+FROM alumnos
+ORDER BY calificacion ASC;
+    nombre     | calificacion |   cumple   
+---------------+--------------+------------
+ Diego Mendoza |            7 | 1999-01-08
+ Jameto        |            7 | 1995-10-20
+ Benjamin      |            8 | 2000-03-15
+ Alejandro     |            9 | 1998-05-25
+ Ruben         |            9 | 1998-05-25
+(5 filas)
+
+zulu=# SELECT nombre, cumple
+zulu-# FROM alumnos
+zulu-# WHERE cumple < '1997-01-01';
+ nombre |   cumple   
+--------+------------
+ Jameto | 1995-10-20
+(1 fila)
+
+zulu=# SELECT AVG(calificacion) as promeio
+zulu-# FROM alumnos;
+      promeio       
+--------------------
+ 8.0000000000000000
+(1 fila)
+
+zulu=# INSERT INTO alumnos (nombre) VALUES ('Pablo Juan');
+INSERT 0 1
+zulu=# INSERT INTO alumnos (nombre) VALUES ('Juan Pablo');
+INSERT 0 1
+zulu=# SELECT COUNT (*) AS alumnos_con_cumple
+zulu-# FROM alumnos
+zulu-# WHERE cumple IS NOT NULL;
+ alumnos_con_cumple 
+--------------------
+                  5
+(1 fila)
+
+zulu=# SELECT COUNT (*) AS alumnos_sin_cumple
+FROM alumnos
+WHERE cumple IS NULL;
+ alumnos_sin_cumple 
+--------------------
+                  2
+(1 fila)
+
+zulu=# SELECT COUNT (*) AS alumnos_sin_cumple, nombre
+FROM alumnos
+WHERE cumple IS NULL;
+ERROR:  column "alumnos.nombre" must appear in the GROUP BY clause or be used in an aggregate function
+LÍNEA 1: SELECT COUNT (*) AS alumnos_sin_cumple, nombre
+                                                 ^
+zulu=# SELECT COUNT (*) AS alumnos_sin_cumple        
+FROM alumnos
+WHERE cumple IS NULL;
+ alumnos_sin_cumple 
+--------------------
+                  2
+(1 fila)
+
+zulu=# SELECT COUNT (*) AS alumnos_sin_cumple
+FROM alumnos
+WHERE cumple IS NULL
+zulu-# ;
+ alumnos_sin_cumple 
+--------------------
+                  2
+(1 fila)
+
+zulu=# SELECT COUNT (*) AS sin_cumple
+zulu-# SELECT nombre
+zulu-# FROM alumnos
+zulu-# WHERE cumple IS NULL;
+ERROR:  syntax error at or near "SELECT"
+LÍNEA 2: SELECT nombre
+         ^
+zulu=# \q
+
